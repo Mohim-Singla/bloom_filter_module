@@ -14,6 +14,9 @@ function fnv1a(str, seed = 0x811c9dc5) {
   return hash;
 }
 
+/**
+ * Represents a probabilistic Bloom filter data structure.
+ */
 export class moduleBloomFilter {
   #input;
   #bitArray;
@@ -21,6 +24,13 @@ export class moduleBloomFilter {
   #max_bit_array_size;
   #hashSeedRounds = 0;
 
+  /**
+   * Creates a new instance of moduleBloomFilter.
+   * @param {Object} input - Configuration options.
+   * @param {number} input.allowed_false_positives - Target false positive rate.
+   * @param {number} input.estimated_elements - Expected number of elements to store.
+   * @param {number} input.max_allowed_bit_array_size - Maximum upper limit for bit array length.
+   */
   constructor(input) {
     this.#input = input;
     const { allowed_false_positives, estimated_elements, max_allowed_bit_array_size } = input;
@@ -37,10 +47,15 @@ export class moduleBloomFilter {
     this.#bitArray = new Uint8Array(Math.ceil(this.#max_bit_array_size / 8));
   }
 
+  /**
+   * Generates k independent seed-derived hash functions.
+   * @param {number} k - Number of hash functions needed.
+   * @returns {Array<function(any): number>} Array of hash functions.
+   * @private
+   */
   #createHashFunctions(k) {
     const funcs = [];
     for (let i = 0; i < k; i++) {
-      // Use different seeds derived for each round
       const seed = (0x811c9dc5 ^ (i * 0x9e3779b9)) >>> 0;
       funcs.push((item) => {
         const str = typeof item === 'string' ? item : JSON.stringify(item);
@@ -52,7 +67,7 @@ export class moduleBloomFilter {
 
   /**
    * Add an item to the Bloom filter.
-   * @param {string|object|number} item
+   * @param {string|object|number} item - Item to insert into the set.
    */
   add(item) {
     for (const hashFn of this.#hashFunctions) {
@@ -65,8 +80,8 @@ export class moduleBloomFilter {
 
   /**
    * Check if an item is possibly in the Bloom filter.
-   * @param {string|object|number} item
-   * @returns {boolean} False if definitely not in the set, true if probably in the set.
+   * @param {string|object|number} item - Item to search in the set.
+   * @returns {boolean} `false` if definitely not in set, `true` if probably in set.
    */
   contains(item) {
     for (const hashFn of this.#hashFunctions) {
@@ -81,7 +96,12 @@ export class moduleBloomFilter {
   }
 
   /**
-   * Get metadata information about the Bloom filter setup.
+   * Get metadata information about the Bloom filter configuration and memory footprint.
+   * @type {Object}
+   * @property {number} bitArraySize - Total bits allocated.
+   * @property {number} hashFunctionsCount - Number of hashing rounds (k).
+   * @property {number} bytesUsed - Memory usage in bytes.
+   * @property {Object} input - Initial parameters provided.
    */
   get info() {
     return {
