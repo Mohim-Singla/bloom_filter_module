@@ -43,6 +43,18 @@ Returns `true` if the item is probably in the set, and `false` if it is definite
 ### `filter.info`
 Getter returning filter statistics including bit array size, number of hash function rounds, and memory footprint in bytes.
 
+## Performance & Benchmarks
+
+Run benchmarks locally using:
+```bash
+npm run benchmark
+```
+
+Example performance for **50,000 items** processed:
+- **Add Operations**: ~17 ms (50,000 insertions)
+- **Check Operations (Hit)**: ~11 ms (50,000 queries)
+- **Check Operations (Miss)**: ~15 ms (50,000 queries)
+
 ## License
 
 ISC

@@ -8,7 +8,8 @@
     "test": "node test.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json",
+    "benchmark": "node benchmark.js"
   },
   "repository": {
     "type": "git",
